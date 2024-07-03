@@ -9,9 +9,9 @@ from bbox_annotator import BboxAnnotator
 
 
 def load_annotations(annotations_file):
-    with open(annotations_file, 'r') as f:
+    with open(annotations_file, "r") as f:
         coco_data = json.load(f)
-    
+
     id2name = {}
     name2id = {}
     ann_dict = {}
@@ -22,8 +22,9 @@ def load_annotations(annotations_file):
 
     for ann in coco_data["annotations"]:
         ann_dict[ann["image_id"]].append(ann)
-        
+
     return coco_data, id2name, name2id, ann_dict
+
 
 def save_annotations(annotations_file, annotations, ann_dict, update_date=False):
     annotations["annotations"] = []
@@ -33,37 +34,47 @@ def save_annotations(annotations_file, annotations, ann_dict, update_date=False)
     if update_date:
         annotations["info"]["date_created"] = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
 
-    with open(annotations_file, 'w') as f:
+    with open(annotations_file, "w") as f:
         json.dump(annotations, f, indent=2)
 
-def parse_args(): 
+
+def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('coco_folder', type=str,
-                        help='Folder containing the dataset for annotation',)
-    parser.add_argument('--img-path', type=str,
-                        help='Path to the folder with images',
-                        default=None)
-    
+    parser.add_argument(
+        "coco_folder",
+        type=str,
+        help="Folder containing the dataset for annotation",
+    )
+    parser.add_argument("--img-path", type=str, help="Path to the folder with images", default=None)
+
     args = parser.parse_args()
 
-    assert os.path.exists(args.coco_folder), "Given folder ({:s}) not found".format(args.coco_folder)
-    assert os.path.isdir(args.coco_folder), "Given folder ({:s}) is not a folder".format(args.coco_folder)
+    assert os.path.exists(args.coco_folder), "Given folder ({:s}) not found".format(
+        args.coco_folder
+    )
+    assert os.path.isdir(args.coco_folder), "Given folder ({:s}) is not a folder".format(
+        args.coco_folder
+    )
 
     if args.img_path is None:
-        subdirs = [d for d in os.listdir(args.coco_folder) if os.path.isdir(os.path.join(args.coco_folder, d))]
+        subdirs = [
+            d
+            for d in os.listdir(args.coco_folder)
+            if os.path.isdir(os.path.join(args.coco_folder, d))
+        ]
         if "val2017" in subdirs:
             args.img_path = os.path.join(args.coco_folder, "val2017")
         elif "images" in subdirs:
             args.img_path = os.path.join(args.coco_folder, "images")
         else:
             args.img_path = args.coco_folder
-    
+
     args = prepare_filestructure(args)
 
     return args
 
-def prepare_filestructure(args):
 
+def prepare_filestructure(args):
     if args.coco_folder == args.img_path:
         # Create a new folder for the images and annotations
         new_img_path = os.path.join(args.coco_folder, "val2017")
@@ -71,23 +82,22 @@ def prepare_filestructure(args):
 
         # Move all images to the new folder
         for img in os.listdir(args.img_path):
-            os.rename(
-                os.path.join(args.img_path, img),
-                os.path.join(new_img_path, img)
-            )
+            os.rename(os.path.join(args.img_path, img), os.path.join(new_img_path, img))
         args.img_path = new_img_path
-    
+
     # Create a new folder for the annotations
     new_ann_path = os.path.join(args.coco_folder, "annotations")
     os.makedirs(new_ann_path, exist_ok=True)
     return args
 
+
 def get_ann_filepath(args):
     ann_filename = os.path.join(args.coco_folder, "annotations", "person_keypoints_val2017.json")
     if not (os.path.exists(ann_filename) and os.path.isfile(ann_filename)):
         create_ann_file(ann_filename, args.img_path)
-    
+
     return ann_filename
+
 
 def create_ann_file(ann_filename, img_path):
     ann_dict = {
@@ -121,105 +131,51 @@ def create_ann_file(ann_filename, img_path):
                     "left_knee",
                     "right_knee",
                     "left_ankle",
-                    "right_ankle"
+                    "right_ankle",
                 ],
                 "skeleton": [
-                    [
-                        16,
-                        14
-                    ],
-                    [
-                        14,
-                        12
-                    ],
-                    [
-                        17,
-                        15
-                    ],
-                    [
-                        15,
-                        13
-                    ],
-                    [
-                        12,
-                        13
-                    ],
-                    [
-                        6,
-                        12
-                    ],
-                    [
-                        7,
-                        13
-                    ],
-                    [
-                        6,
-                        7
-                    ],
-                    [
-                        6,
-                        8
-                    ],
-                    [
-                        7,
-                        9
-                    ],
-                    [
-                        8,
-                        10
-                    ],
-                    [
-                        9,
-                        11
-                    ],
-                    [
-                        2,
-                        3
-                    ],
-                    [
-                        1,
-                        2
-                    ],
-                    [
-                        1,
-                        3
-                    ],
-                    [
-                        2,
-                        4
-                    ],
-                    [
-                        3,
-                        5
-                    ],
-                    [
-                        4,
-                        6
-                    ],
-                    [
-                        5,
-                        7
-                    ]
-                ]
+                    [16, 14],
+                    [14, 12],
+                    [17, 15],
+                    [15, 13],
+                    [12, 13],
+                    [6, 12],
+                    [7, 13],
+                    [6, 7],
+                    [6, 8],
+                    [7, 9],
+                    [8, 10],
+                    [9, 11],
+                    [2, 3],
+                    [1, 2],
+                    [1, 3],
+                    [2, 4],
+                    [3, 5],
+                    [4, 6],
+                    [5, 7],
+                ],
             }
-        ]
+        ],
     }
 
     for img_i, img_name in enumerate(os.listdir(img_path)):
         img = cv2.imread(os.path.join(img_path, img_name))
-        ann_dict["images"].append({
-            "id": img_i,
-            "file_name": img_name,
-            "width": img.shape[1],
-            "height": img.shape[0],
-            "date_captured": datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"),
-        })
-    
+        ann_dict["images"].append(
+            {
+                "id": img_i,
+                "file_name": img_name,
+                "width": img.shape[1],
+                "height": img.shape[0],
+                "date_captured": datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"),
+            }
+        )
+
     ann_dict["annotations"] = []
 
-    with open(ann_filename, 'w') as f:
+    with open(ann_filename, "w") as f:
         json.dump(ann_dict, f, indent=2)
-        
+
+
 def increment_idx(idx, len_annotations, increment):
     idx += increment
     if idx >= len_annotations:
@@ -228,116 +184,115 @@ def increment_idx(idx, len_annotations, increment):
         idx = len_annotations - 1
     return idx
 
-def main(args):
 
+def main(args):
     # Load the data
     coco_data, id2name, name2id, ann_dict = load_annotations(get_ann_filepath(args))
     img_list = [(img["file_name"], img["id"]) for img in coco_data["images"]]
     img_idx = 0
     save_path = os.path.join(args.coco_folder, "annotations", "person_keypoints_val2017.json")
 
-    cv2.namedWindow('Image', cv2.WINDOW_GUI_NORMAL)
+    cv2.namedWindow("Image", cv2.WINDOW_GUI_NORMAL)
     ia = BboxAnnotator(
         ann_dict[img_list[img_idx][1]],
         img_list[img_idx][1],
         os.path.join(args.img_path, img_list[img_idx][0]),
-        is_start=img_idx==0,
+        is_start=img_idx == 0,
     )
-    cv2.setMouseCallback('Image', ia.mouse_callback)
+    cv2.setMouseCallback("Image", ia.mouse_callback)
 
-    while cv2.getWindowProperty('Image',cv2.WND_PROP_VISIBLE) > 0:
-
+    while cv2.getWindowProperty("Image", cv2.WND_PROP_VISIBLE) > 0:
         # The function waitKey waits for a key event infinitely (when delay<=0)
-        k = cv2.waitKey(100) 
-        if k == ord('m') or k == 83:                       # toggle current image
+        k = cv2.waitKey(100)
+        if k == ord("m") or k == 83:  # toggle current image
             ann_dict[img_list[img_idx][1]] = ia.get_annotation(json_compatible=True)
             img_idx = increment_idx(img_idx, len(img_list), 1)
-            
+
             ia = BboxAnnotator(
                 ann_dict[img_list[img_idx][1]],
                 img_list[img_idx][1],
                 os.path.join(args.img_path, img_list[img_idx][0]),
-                is_start=img_idx==0,
+                is_start=img_idx == 0,
             )
             save_annotations(save_path, coco_data, ann_dict, update_date=True)
-            
-            cv2.setMouseCallback('Image', ia.mouse_callback)
-        elif k == ord('n') or k == 81:
+
+            cv2.setMouseCallback("Image", ia.mouse_callback)
+        elif k == ord("n") or k == 81:
             ann_dict[img_list[img_idx][1]] = ia.get_annotation(json_compatible=True)
             img_idx = increment_idx(img_idx, len(img_list), -1)
-            
+
             ia = BboxAnnotator(
                 ann_dict[img_list[img_idx][1]],
                 img_list[img_idx][1],
                 os.path.join(args.img_path, img_list[img_idx][0]),
-                is_start=img_idx==0,
+                is_start=img_idx == 0,
             )
             save_annotations(save_path, coco_data, ann_dict, update_date=True)
-            
-            cv2.setMouseCallback('Image', ia.mouse_callback)
-        elif k == ord(',') or k == 83:                       # toggle current image
+
+            cv2.setMouseCallback("Image", ia.mouse_callback)
+        elif k == ord(",") or k == 83:  # toggle current image
             ann_dict[img_list[img_idx][1]] = ia.get_annotation(json_compatible=True)
             img_idx = increment_idx(img_idx, len(img_list), -10)
-            
+
             ia = BboxAnnotator(
                 ann_dict[img_list[img_idx][1]],
                 img_list[img_idx][1],
                 os.path.join(args.img_path, img_list[img_idx][0]),
-                is_start=img_idx==0,
+                is_start=img_idx == 0,
             )
             save_annotations(save_path, coco_data, ann_dict, update_date=True)
-            
-            cv2.setMouseCallback('Image', ia.mouse_callback)
-        elif k == ord('.') or k == 81:
+
+            cv2.setMouseCallback("Image", ia.mouse_callback)
+        elif k == ord(".") or k == 81:
             ann_dict[img_list[img_idx][1]] = ia.get_annotation(json_compatible=True)
             img_idx = increment_idx(img_idx, len(img_list), 10)
-            
+
             ia = BboxAnnotator(
                 ann_dict[img_list[img_idx][1]],
                 img_list[img_idx][1],
                 os.path.join(args.img_path, img_list[img_idx][0]),
-                is_start=img_idx==0,
+                is_start=img_idx == 0,
             )
             save_annotations(save_path, coco_data, ann_dict, update_date=True)
-            
-            cv2.setMouseCallback('Image', ia.mouse_callback)
-        elif k == ord('x'):
+
+            cv2.setMouseCallback("Image", ia.mouse_callback)
+        elif k == ord("x"):
             ann_dict[img_list[img_idx][1]] = ia.get_annotation(json_compatible=True)
             img_idx = np.random.randint(len(img_list))
-            
+
             ia = BboxAnnotator(
                 ann_dict[img_list[img_idx][1]],
                 img_list[img_idx][1],
                 os.path.join(args.img_path, img_list[img_idx][0]),
-                is_start=img_idx==0,
+                is_start=img_idx == 0,
             )
             save_annotations(save_path, coco_data, ann_dict, update_date=True)
-            
-            cv2.setMouseCallback('Image', ia.mouse_callback)
-        elif k == ord('q'): 
+
+            cv2.setMouseCallback("Image", ia.mouse_callback)
+        elif k == ord("q"):
             ann_dict[img_list[img_idx][1]] = ia.get_annotation(json_compatible=True)
             break
-        elif k == ord('u'):
+        elif k == ord("u"):
             ann_dict[img_list[img_idx][1]] = ia.get_annotation(json_compatible=True)
             while not ann_dict[img_list[img_idx][1]] == []:
                 img_idx = increment_idx(img_idx, len(img_list), 1)
-            
+
             ia = BboxAnnotator(
                 ann_dict[img_list[img_idx][1]],
                 img_list[img_idx][1],
                 os.path.join(args.img_path, img_list[img_idx][0]),
-                is_start=img_idx==0,
+                is_start=img_idx == 0,
             )
             save_annotations(save_path, coco_data, ann_dict, update_date=True)
-            
-            cv2.setMouseCallback('Image', ia.mouse_callback)
+
+            cv2.setMouseCallback("Image", ia.mouse_callback)
         else:
             ia.key_pressed(k)
 
     cv2.destroyAllWindows()
     save_annotations(save_path, coco_data, ann_dict, update_date=True)
 
-        
+
 if __name__ == "__main__":
     args = parse_args()
     main(args)
