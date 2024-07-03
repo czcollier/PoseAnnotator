@@ -8,18 +8,18 @@ There are some examples in this [file](examples.md)
 
 ## How to start
 
-**Bboxes annottaion:** use script [annotate_bboxes](annotate_bboxes.py) to take batch of images and annotate bboxes.
+**Bboxes annottaion:** use script [annotate_bboxes](../annotate_bboxes.py) to take batch of images and annotate bboxes.
 
 > __Example usage:__ `python annotate_bboxes.py test_data/RePoGen_bbox_test`
 
-**Keypoints annottaion:** use script [annotate_keypoints](annotate_pose.py) to take images with annotated bboxes and add keypoints.
+**Keypoints annottaion:** use script [annotate_keypoints](../annotate_pose.py) to take images with annotated bboxes and add keypoints.
 
 > __Example usage:__ `python annotate_pose.py test_data/RePoGen_kpts_test/annotations/person_keypoints_val2017.json`
 
 
 ### Folder structure
 
-The tool is implemented primarily for COCO-style annotation and therefore expects its file structure. Each dataset should have 3 subfolders `annotations`, `val2017` and optionally `train2017`. Example datasets are in folder [test_data](test_data/).
+The tool is implemented primarily for COCO-style annotation and therefore expects its file structure. Each dataset should have 3 subfolders `annotations`, `val2017` and optionally `train2017`. Example datasets are in folder [test_data](../test_data/).
 
 You don't need any annotation file if you want to annotate bboxes. If you want to annotate both, first annotate bboxes and then use the other script for keypoints annotation.
 
@@ -60,7 +60,7 @@ There is also settings to allow for 3 levels of visibility. The least visible (w
 
 ### Pose format
 
-The tool works with COCO-format but we created some custom pose formats for our use-cases. You can see example of one such custom format if you use option `--pose-format coco_with_thumbs`. Visualization of the format is in [this image](example_images/coco_with_thumbs.png).
+The tool works with COCO-format but we created some custom pose formats for our use-cases. You can see example of one such custom format if you use option `--pose-format coco_with_thumbs`. Visualization of the format is in [this image](../example_images/coco_with_thumbs.png).
 
 ### Exporting results
 
