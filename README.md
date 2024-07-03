@@ -1,6 +1,8 @@
 # PoseAnnotator
 PoseAnnotator is a simple Python tool with a GUI for annotating 2D human poses from images. It allows users to easily label key points on human figures for pose estimation tasks.
 
+![example](docs/images/correct.gif)
+
 ### Why PoseAnnotator
 
 There are nice free annotation tools like [CVAT](https://www.cvat.ai) or [LabelStudio](https://labelstud.io) but they do not specialize for 2D Human Pose Annotation. It is possible to annotate images with keypoints or landmarks but there is no structure visualized for annotator to better understand the scene.
