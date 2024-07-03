@@ -23,9 +23,23 @@ class InteractiveAnnotator(object):
         normalize_shape=True,
         pose_format="coco",
     ) -> None:
+        """
+        Initializes an instance of the InteractiveAnnotator class.
+
+        Parameters:
+        - annotation: A dictionary containing the annotation information.
+        - img_path: The path to the image file.
+        - window_name: The name of the window to display the image.
+        - fps: The frames per second for displaying the image.
+        - with_example: A boolean indicating whether to show an example image.
+        - is_start: A boolean indicating whether it is the start of the annotation.
+        - two_scales: A boolean indicating whether to use two scales for annotation.
+        - inf_size: The size of the inference image.
+        - normalize_shape: A boolean indicating whether to normalize the shape of the annotation.
+        - pose_format: The format of the pose annotation.
+        """
         self.started_at = time.time()
 
-        # self.img_path = img_path
         self.img = cv2.imread(img_path)
 
         if annotation is None:

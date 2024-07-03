@@ -10,6 +10,18 @@ from .visualization import show_bboxes
 
 
 class BboxAnnotator(object):
+    """
+    Annotates bounding boxes on an image.
+
+    Args:
+        annotations (list): List of existing annotations.
+        img_id (int): ID of the image.
+        img_path (str): Path to the image file.
+        window_name (str, optional): Name of the window to display the image. Defaults to "Image".
+        fps (int, optional): Frames per second for displaying the image. Defaults to 20.
+        is_start (bool, optional): Flag indicating if it is the start of the annotation. Defaults to True.
+    """
+
     def __init__(
         self, annotations, img_id, img_path, window_name="Image", fps=20, is_start=True
     ) -> None:

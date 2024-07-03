@@ -3,6 +3,19 @@ import json
 
 
 def load_annotations(annotations_file):
+    """
+    Load annotations from a JSON file.
+
+    Args:
+        annotations_file (str): The path to the JSON file containing the annotations.
+
+    Returns:
+        tuple: A tuple containing the following:
+            - coco_data (dict): The loaded JSON data.
+            - id2name (dict): A dictionary mapping image IDs to file names.
+            - name2id (dict): A dictionary mapping file names to image IDs.
+            - ann_dict (dict): A dictionary mapping image IDs to a list of annotations.
+    """
     with open(annotations_file, "r") as f:
         coco_data = json.load(f)
 
@@ -21,6 +34,15 @@ def load_annotations(annotations_file):
 
 
 def save_annotations(annotations_file, annotations, update_date=False, save=True):
+    """
+    Save the annotations to a JSON file.
+
+    Args:
+        annotations_file (str): The path to the JSON file where the annotations will be saved.
+        annotations (dict): The annotations to be saved.
+        update_date (bool, optional): Whether to update the "date_created" field in the annotations. Defaults to False.
+        save (bool, optional): Whether to save the annotations. If set to False, the function will return without saving. Defaults to True.
+    """
     if not save:
         return
     if update_date:
@@ -30,6 +52,17 @@ def save_annotations(annotations_file, annotations, update_date=False, save=True
 
 
 def increment_idx(idx, len_annotations, increment):
+    """
+    Increments the given index by the specified increment, taking into account the length of the annotations.
+
+    Args:
+        idx (int): The current index.
+        len_annotations (int): The length of the annotations.
+        increment (int): The amount by which to increment the index.
+
+    Returns:
+        int: The updated index value.
+    """
     idx += increment
     if idx >= len_annotations:
         idx = 0
