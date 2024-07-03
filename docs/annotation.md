@@ -33,6 +33,8 @@ The pose annotation tool offers several keyboard shortcuts to improve your annot
 | `u`       | **Next unannotated** pose                                                                                |
 | `m`       | Save the current annotation progress and move to the **next one**                                        |
 | `n`       | Save the current annotation progress and move to the **previous one**                                    |
+| `,/.`     | **Jump by 10** backward/forward.                                                                         |
+| `x`       | **Random** annotation. Useful for random quality check.                                                  |
 | `v`       | Change the **visibility** of the currently selected keypoint (works only while holding the mouse button) |
 | `d`       | **Delete** the currently selected keypoint (works only while holding the mouse button)                   |
 | `a`       | **Add** a new kypoint, if any is missing                                                                 |

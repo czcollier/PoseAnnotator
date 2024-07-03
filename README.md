@@ -16,6 +16,8 @@ If you find this tool useful, let us or other people who might be interested, kn
 
 The tool does not need any installation apart from common Python libraries defined in [requirements.txt](requirements.txt). You can use either pip or Conda and provided [environment file](environment.yml).
 
+Unreasonably detailed instruction are at [install.md](docs/install.md)
+
 If you would like to contribute to the project, please use the pre-commit which automatically format the code. To install, just run 
 `pre-commit install` and the code will be automatically formatted after each commit.
 
