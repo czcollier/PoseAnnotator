@@ -6,7 +6,7 @@ from copy import deepcopy
 import cv2
 import numpy as np
 
-from visualization import show_annotation
+from .visualization import show_annotation
 
 
 class InteractiveAnnotator(object):

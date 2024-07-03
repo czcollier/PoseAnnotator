@@ -6,25 +6,8 @@ import os
 import cv2
 import numpy as np
 
-from bbox_annotator import BboxAnnotator
-
-
-def load_annotations(annotations_file):
-    with open(annotations_file, "r") as f:
-        coco_data = json.load(f)
-
-    id2name = {}
-    name2id = {}
-    ann_dict = {}
-    for img in coco_data["images"]:
-        id2name[img["id"]] = img["file_name"]
-        name2id[img["file_name"]] = img["id"]
-        ann_dict[img["id"]] = []
-
-    for ann in coco_data["annotations"]:
-        ann_dict[ann["image_id"]].append(ann)
-
-    return coco_data, id2name, name2id, ann_dict
+from src.bbox_annotator import BboxAnnotator
+from src.json_utils import increment_idx, load_annotations, save_annotations
 
 
 def save_annotations(annotations_file, annotations, ann_dict, update_date=False):
@@ -177,18 +160,9 @@ def create_ann_file(ann_filename, img_path):
         json.dump(ann_dict, f, indent=2)
 
 
-def increment_idx(idx, len_annotations, increment):
-    idx += increment
-    if idx >= len_annotations:
-        idx = 0
-    elif idx < 0:
-        idx = len_annotations - 1
-    return idx
-
-
 def main(args):
     # Load the data
-    coco_data, id2name, name2id, ann_dict = load_annotations(get_ann_filepath(args))
+    coco_data, _, _, ann_dict = load_annotations(get_ann_filepath(args))
     img_list = [(img["file_name"], img["id"]) for img in coco_data["images"]]
     img_idx = 0
     save_path = os.path.join(args.coco_folder, "annotations", "person_keypoints_val2017.json")

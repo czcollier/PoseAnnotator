@@ -6,7 +6,7 @@ from copy import deepcopy
 import cv2
 import numpy as np
 
-from visualization import show_bboxes
+from .visualization import show_bboxes
 
 
 class BboxAnnotator(object):

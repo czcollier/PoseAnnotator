@@ -1,33 +1,11 @@
 import argparse
-import datetime
-import json
 import os
 
 import cv2
 import numpy as np
 
-from interactive_annotator import InteractiveAnnotator
-
-
-def load_annotations(annotations_file):
-    with open(annotations_file, "r") as f:
-        coco_data = json.load(f)
-
-    id2name = {}
-    name2id = {}
-    for img in coco_data["images"]:
-        id2name[img["id"]] = img["file_name"]
-        name2id[img["file_name"]] = img["id"]
-    return coco_data, id2name, name2id
-
-
-def save_annotations(annotations_file, annotations, update_date=False, save=True):
-    if not save:
-        return
-    if update_date:
-        annotations["info"]["date_created"] = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-    with open(annotations_file, "w") as f:
-        json.dump(annotations, f, indent=2)
+from src.interactive_annotator import InteractiveAnnotator
+from src.json_utils import increment_idx, load_annotations, save_annotations
 
 
 def parse_imdir(annotations_file):
@@ -63,11 +41,9 @@ def parse_args():
     args = parser.parse_args()
 
     if not (os.path.exists(args.coco_filepath) and os.path.isfile(args.coco_filepath)):
-        old_fname = os.path.join(
-            "data", args.coco_filepath, "annotations", "person_keypoints_val2017.json"
-        )
+        old_fname = os.path.join(args.coco_filepath, "annotations", "person_keypoints_val2017.json")
         new_fname = os.path.join(
-            "data", args.coco_filepath, "annotations", "person_keypoints_val2017_kpts.json"
+            args.coco_filepath, "annotations", "person_keypoints_val2017_kpts.json"
         )
         if os.path.exists(new_fname):
             args.coco_filepath = new_fname
@@ -96,18 +72,9 @@ def parse_args():
     return args
 
 
-def increment_idx(idx, len_annotations, increment):
-    idx += increment
-    if idx >= len_annotations:
-        idx = 0
-    elif idx < 0:
-        idx = len_annotations - 1
-    return idx
-
-
 def main(args):
     # Load the data
-    coco_data, id2name, name2id = load_annotations(args.coco_filepath)
+    coco_data, id2name, _, _ = load_annotations(args.coco_filepath)
     ann_idx = 0
 
     new_coco_filepath = args.coco_filepath
@@ -139,7 +106,8 @@ def main(args):
                 pose_format=args.pose_format,
             )
             coco_data["annotations"] = annotations
-            save_annotations(new_coco_filepath, coco_data, update_date=True, save=args.save)
+            if args.save:
+                save_annotations(new_coco_filepath, coco_data, update_date=True)
 
             cv2.setMouseCallback("Image", ia.mouse_callback)
         elif k == ord("."):  # jump 10
@@ -152,7 +120,8 @@ def main(args):
                 is_start=ann_idx == 0,
             )
             coco_data["annotations"] = annotations
-            save_annotations(new_coco_filepath, coco_data, update_date=True, save=args.save)
+            if args.save:
+                save_annotations(new_coco_filepath, coco_data, update_date=True)
 
             cv2.setMouseCallback("Image", ia.mouse_callback)
         elif k == ord(","):  # jump -10
@@ -165,7 +134,8 @@ def main(args):
                 is_start=ann_idx == 0,
             )
             coco_data["annotations"] = annotations
-            save_annotations(new_coco_filepath, coco_data, update_date=True, save=args.save)
+            if args.save:
+                save_annotations(new_coco_filepath, coco_data, update_date=True)
 
             cv2.setMouseCallback("Image", ia.mouse_callback)
         elif k == ord("n") or k == 81:
@@ -179,7 +149,8 @@ def main(args):
                 pose_format=args.pose_format,
             )
             coco_data["annotations"] = annotations
-            save_annotations(new_coco_filepath, coco_data, update_date=True, save=args.save)
+            if args.save:
+                save_annotations(new_coco_filepath, coco_data, update_date=True)
 
             cv2.setMouseCallback("Image", ia.mouse_callback)
         elif k == ord("x"):
@@ -193,7 +164,8 @@ def main(args):
                 pose_format=args.pose_format,
             )
             coco_data["annotations"] = annotations
-            save_annotations(new_coco_filepath, coco_data, update_date=True, save=args.save)
+            if args.save:
+                save_annotations(new_coco_filepath, coco_data, update_date=True)
 
             cv2.setMouseCallback("Image", ia.mouse_callback)
         elif k == ord("q"):
@@ -211,7 +183,8 @@ def main(args):
                 pose_format=args.pose_format,
             )
             coco_data["annotations"] = annotations
-            save_annotations(new_coco_filepath, coco_data, update_date=True, save=args.save)
+            if args.save:
+                save_annotations(new_coco_filepath, coco_data, update_date=True)
 
             cv2.setMouseCallback("Image", ia.mouse_callback)
         else:
@@ -219,7 +192,8 @@ def main(args):
 
     cv2.destroyAllWindows()
     coco_data["annotations"] = annotations
-    save_annotations(new_coco_filepath, coco_data, update_date=True, save=args.save)
+    if args.save:
+        save_annotations(new_coco_filepath, coco_data, update_date=True)
 
 
 if __name__ == "__main__":
