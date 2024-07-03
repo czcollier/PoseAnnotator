@@ -13,6 +13,8 @@ repos:
         language: python
         args:
           [
+            ".",
+            "-r",
             "--in-place",
             "--remove-all-unused-imports",
             "--remove-unused-variables",
