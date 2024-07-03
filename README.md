@@ -28,3 +28,18 @@ If you would like to contribute to the project, please use the pre-commit which 
 The script might need minor adaptations to use for your specific use-case. 
 
 For details like keyboard shortcuts, see [annotation how to](docs/annotation.md)
+
+## Citation
+
+If you find this project useful, share it with others.
+
+If you use the tool for your research, please consider citing us:
+
+```bibtex
+@misc{PoseAnnotator2024,
+    title={PoseAnnotator},
+    author={Miroslav Purkrabek},
+    howpublished = {\url{https://github.com/MiraPurkrabek/PoseAnnotator}},
+    year={2024}
+}
+```
