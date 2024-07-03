@@ -1,7 +1,8 @@
-import os
-import datetime
 import argparse
+import datetime
 import json
+import os
+
 import cv2
 import numpy as np
 

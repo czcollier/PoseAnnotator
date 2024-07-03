@@ -1,6 +1,7 @@
 import json
 import os
 from copy import deepcopy
+
 import numpy as np
 
 bboxes = json.load(open("data/OCHuman/annotations/person_keypoints_val2017.json", "r"))

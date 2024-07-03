@@ -1,11 +1,12 @@
-from copy import deepcopy
-from collections import deque
-import time
 import datetime
-import numpy as np
-import cv2
+import time
+from collections import deque
+from copy import deepcopy
 
-from visualization import show_annotation, cut_bbox
+import cv2
+import numpy as np
+
+from visualization import cut_bbox, show_annotation
 
 
 class InteractiveAnnotator(object):
