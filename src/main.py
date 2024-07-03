@@ -32,7 +32,7 @@ def save_annotations(annotations_file, annotations, update_date=False, save=True
 
 def parse_imdir(annotations_file):
     ann_filename = ".".join(os.path.basename(annotations_file).split(".")[::-1])
-    ann_filename = ann_filename.replace("_new", "")
+    ann_filename = ann_filename.replace("_kpts", "")
     ann_type = ann_filename.split("_")[-1]
     if ann_type not in ["train2017", "val2017"]:
         print(
@@ -53,6 +53,10 @@ def parse_args():
     )
     parser.add_argument("--img-path", type=str, help="Path to the folder with images", default=None)
 
+    # Optional arguments
+    parser.add_argument(
+        "--pose-format", type=str, default="coco", help="Format of the annotated skeleton"
+    )
     parser.add_argument("--without-hands", default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument("--save", default=True, action=argparse.BooleanOptionalAction)
 
@@ -63,7 +67,7 @@ def parse_args():
             "data", args.coco_filepath, "annotations", "person_keypoints_val2017.json"
         )
         new_fname = os.path.join(
-            "data", args.coco_filepath, "annotations", "person_keypoints_val2017_new.json"
+            "data", args.coco_filepath, "annotations", "person_keypoints_val2017_kpts.json"
         )
         if os.path.exists(new_fname):
             args.coco_filepath = new_fname
@@ -79,6 +83,15 @@ def parse_args():
 
     if args.img_path is None:
         args.img_path = parse_imdir(args.coco_filepath)
+
+    args.pose_format = args.pose_format.lower()
+    implemented_formats = ["coco", "coco_with_thumbs"]
+    if args.pose_format not in implemented_formats:
+        raise NotImplementedError(
+            "Format {:s} not implemented. Use one of the following: {}".format(
+                args.pose_format, implemented_formats
+            )
+        )
 
     return args
 
@@ -98,8 +111,8 @@ def main(args):
     ann_idx = 0
 
     new_coco_filepath = args.coco_filepath
-    if "_new.json" not in args.coco_filepath:
-        new_coco_filepath = args.coco_filepath.replace(".json", "_new.json")
+    if "_kpts.json" not in args.coco_filepath:
+        new_coco_filepath = args.coco_filepath.replace(".json", "_kpts.json")
 
     annotations = coco_data["annotations"]
 
@@ -108,7 +121,7 @@ def main(args):
         annotations[ann_idx],
         os.path.join(args.img_path, id2name[annotations[ann_idx]["image_id"]]),
         is_start=ann_idx == 0,
-        with_hand=not args.without_hands,
+        pose_format=args.pose_format,
     )
     cv2.setMouseCallback("Image", ia.mouse_callback)
 
@@ -123,7 +136,7 @@ def main(args):
                 annotations[ann_idx],
                 os.path.join(args.img_path, id2name[annotations[ann_idx]["image_id"]]),
                 is_start=ann_idx == 0,
-                with_hand=not args.without_hands,
+                pose_format=args.pose_format,
             )
             coco_data["annotations"] = annotations
             save_annotations(new_coco_filepath, coco_data, update_date=True, save=args.save)
@@ -163,7 +176,7 @@ def main(args):
                 annotations[ann_idx],
                 os.path.join(args.img_path, id2name[annotations[ann_idx]["image_id"]]),
                 is_start=ann_idx == 0,
-                with_hand=not args.without_hands,
+                pose_format=args.pose_format,
             )
             coco_data["annotations"] = annotations
             save_annotations(new_coco_filepath, coco_data, update_date=True, save=args.save)
@@ -177,7 +190,7 @@ def main(args):
                 annotations[ann_idx],
                 os.path.join(args.img_path, id2name[annotations[ann_idx]["image_id"]]),
                 is_start=ann_idx == 0,
-                with_hand=not args.without_hands,
+                pose_format=args.pose_format,
             )
             coco_data["annotations"] = annotations
             save_annotations(new_coco_filepath, coco_data, update_date=True, save=args.save)
@@ -195,7 +208,7 @@ def main(args):
                 annotations[ann_idx],
                 os.path.join(args.img_path, id2name[annotations[ann_idx]["image_id"]]),
                 is_start=ann_idx == 0,
-                with_hand=not args.without_hands,
+                pose_format=args.pose_format,
             )
             coco_data["annotations"] = annotations
             save_annotations(new_coco_filepath, coco_data, update_date=True, save=args.save)

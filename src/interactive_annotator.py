@@ -6,7 +6,7 @@ from copy import deepcopy
 import cv2
 import numpy as np
 
-from visualization import cut_bbox, show_annotation
+from visualization import show_annotation
 
 
 class InteractiveAnnotator(object):
@@ -18,10 +18,10 @@ class InteractiveAnnotator(object):
         fps=20,
         with_example=True,
         is_start=True,
-        with_hand=False,
         two_scales=False,
         inf_size=None,
         normalize_shape=True,
+        pose_format="coco",
     ) -> None:
         self.started_at = time.time()
 
@@ -53,19 +53,26 @@ class InteractiveAnnotator(object):
         self.preset_inf_size = inf_size
         self.is_start = is_start
         self.two_scales = two_scales
-        self.with_hand = with_hand
+        self.pose_format = pose_format.lower()
         self.current_keypoint = None
         self.dragging = False
         self.window_name = window_name
         self.pressed_at = 0
         self.fps = fps
 
+        self.implemented_formats = ["coco", "coco_with_thumbs"]
+        assert (
+            self.pose_format in self.implemented_formats
+        ), "Format {:s} not implemented. Use one of the following: {}".format(
+            self.pose_format, self.implemented_formats
+        )
+
         self.normalize_shape = normalize_shape
         self.x_transform = lambda x: x
         self.y_transform = lambda x: x
 
         # If WITH HAND, the annotation should have 21 keypoints
-        if self.with_hand and self.annotation["keypoints"].shape[0] != 21:
+        if self.pose_format == "coco_with_thumbs" and self.annotation["keypoints"].shape[0] != 21:
             missing_kpts = 21 - self.annotation["keypoints"].shape[0]
             self.annotation["keypoints"] = np.vstack(
                 (self.annotation["keypoints"], np.zeros((missing_kpts, 3)))
@@ -80,11 +87,7 @@ class InteractiveAnnotator(object):
 
         self.with_example = with_example
         if self.with_example:
-            if self.with_hand:
-                self.example_img = cv2.imread("images/example_with_hand.png")
-            else:
-                self.example_img = cv2.imread("images/example.png")
-
+            self.example_img = cv2.imread("example_images/{:s}.png".format(self.pose_format))
         self.show()
 
     def mouse_callback(self, event, x, y, flags, params):
@@ -168,15 +171,24 @@ class InteractiveAnnotator(object):
         # Zoom the image
         elif k == ord("o"):
             self.bbox_pad += 0.05
-            # self.bbox_pad = min(self.bbox_pad, 0.0)
             if abs(self.bbox_pad) < 1e-5:
                 self.inf_size = self.preset_inf_size
             else:
                 self.inf_size = None
             self.show()
 
+            # Detect max zoom and if so, do not expand the bbox anymore
+            if (
+                self.x_offsets[0] == 0
+                and self.x_offsets[1] == self.img.shape[1]
+                and self.y_offsets[0] == 0
+                and self.y_offsets[1] == self.img.shape[0]
+            ):
+                self.bbox_pad -= 0.05
+
         elif k == ord("p"):
             self.bbox_pad -= 0.05
+            self.bbox_pad = max(self.bbox_pad, -0.45)
             if abs(self.bbox_pad) < 1e-5:
                 self.inf_size = self.preset_inf_size
             else:
@@ -276,7 +288,11 @@ class InteractiveAnnotator(object):
                 self.memory.append(deepcopy(self.annotation))
 
     def generate(self):
-        self.annotation["keypoints"] = np.zeros_like(self.annotation["keypoints"]).astype(float)
+        if self.pose_format == "coco":
+            self.annotation["keypoints"] = np.zeros((17, 3), dtype=float)
+        elif self.pose_format == "coco_with_thumbs":
+            self.annotation["keypoints"] = np.zeros((21, 3), dtype=float)
+
         self.annotation["keypoints"][:, 2] = 2
         self.annotation["keypoints"][:17, :2] = [
             [0.50, 0.15],  # Nose
@@ -297,7 +313,7 @@ class InteractiveAnnotator(object):
             [0.73, 0.93],  # Left ankle
             [0.27, 0.93],  # Right ankle
         ]
-        if self.with_hand:
+        if self.pose_format == "coco_with_thumbs":
             self.annotation["keypoints"][17:, :2] = [
                 [0.92, 0.60],  # Left thumb
                 [0.08, 0.60],  # Right index
@@ -313,7 +329,7 @@ class InteractiveAnnotator(object):
         self.show()
 
     def flip_lr(self):
-        if self.with_hand:
+        if self.pose_format == "coco_with_thumbs":
             self.annotation["keypoints"] = self.annotation["keypoints"][
                 [0, 2, 1, 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 14, 13, 16, 15, 18, 17, 20, 19], :
             ]
