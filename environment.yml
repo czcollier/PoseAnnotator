@@ -1,0 +1,15 @@
+name: PoseAnnotator
+channels:
+  - conda-forge
+  - anaconda
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - autoflake
+  - black
+  - numpy
+  - opencv-python
+  - pre-commit
+  - PyYAML
+  - tqdm

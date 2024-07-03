@@ -1,0 +1,7 @@
+autoflake
+black
+numpy
+opencv-python
+pre-commit
+PyYAML
+tqdm
