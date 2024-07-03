@@ -1,6 +1,8 @@
+# Description: This script transforms the keypoints annotations to COCO format.
+# Usage: python transform_to_coco.py <annotation_file>
+
 import argparse
 import json
-import os
 
 import numpy as np
 
@@ -122,7 +124,7 @@ def main(annot_path):
         in_img = (kpts[:, 0] >= 0) & (kpts[:, 0] < w) & (kpts[:, 1] >= 0) & (kpts[:, 1] < h)
         in_bbox_x = (kpts[:, 0] >= bbox[0]) & (kpts[:, 0] < bbox[0] + bbox[2])
         in_bbox_y = (kpts[:, 1] >= bbox[1]) & (kpts[:, 1] < bbox[1] + bbox[3])
-        in_bbox = in_bbox_x & in_bbox_y
+        in_bbox_x & in_bbox_y
 
         center, scale = bbox_xywh2cs(bbox, padding=1.25, aspect_ratio=3 / 4)
         ex_bbox = bbox_cs2xywh(center, scale, padding=1.25)

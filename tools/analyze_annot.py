@@ -1,6 +1,8 @@
+# Description: Analyze annotation file and print statistics. Works with COCO format.
+# Usage: python analyze_annot.py <annotation_file>
+
 import argparse
 import json
-import os
 
 import numpy as np
 
@@ -49,11 +51,14 @@ def main(annot_path):
             n_bboxes, n_kpts, n_kpts / n_bboxes * 100
         )
     )
-    print(
-        "{} of bboxes have all keypoints annotated. ({:.2f} %)".format(
-            n_full_kpts, n_full_kpts / n_kpts * 100
+    if n_kpts > 0:
+        print(
+            "{} of bboxes have all keypoints annotated. ({:.2f} %)".format(
+                n_full_kpts, n_full_kpts / n_kpts * 100
+            )
         )
-    )
+    else:
+        print("{:d} of bboxes have all keypoints annotated. ({:.2f} %)".format(0, 0.0))
 
     unique_imgs_w_kpts, imgs_w_kpts_counts = np.unique(n_img_w_kpts, return_counts=True)
     unique_imgs_w_bboxes, imgs_w_bboxes_counts = np.unique(n_img_w_bboxes, return_counts=True)
@@ -69,7 +74,7 @@ def main(annot_path):
         "Found {} ({:.2f} %) unique images with keypoints, last annotated image is {}".format(
             len(unique_imgs_w_kpts),
             len(unique_imgs_w_kpts) / len(data["images"]) * 100,
-            unique_imgs_w_kpts[-1],
+            unique_imgs_w_kpts[-1] if len(unique_imgs_w_kpts) > 0 else None,
         )
     )
     print(

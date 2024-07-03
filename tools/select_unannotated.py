@@ -1,6 +1,7 @@
+# Description: Select images that do not have any annotations in the OCHuman dataset.
+# Usage: python tools/select_unannotated.py
+
 import json
-import os
-from copy import deepcopy
 
 import numpy as np
 

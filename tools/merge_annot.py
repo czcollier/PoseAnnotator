@@ -1,3 +1,6 @@
+# Description: Merge two annotation files in COCO format.
+# Usage: python merge_annot.py <file1> <file2> <output_file>
+
 import argparse
 import json
 
