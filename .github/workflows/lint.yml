@@ -1,4 +1,4 @@
-name: lint
+name: PyLint
 
 on: [push, pull_request]
 
@@ -19,4 +19,30 @@ jobs:
         run: |
           pip install black
       - name: Format check
-        run: black . -l 100 --target-version py36; git add -u
+        run: black . -l 100 --target-version py36
+  Autoflake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Install Autoflake library
+        run: |
+          pip install autoflake
+      - name: Remove unused variables and imports
+        run: autoflake --in-place --remove-all-unused-imports --remove-unused-variables --expand-star-imports --ignore-init-module-imports
+  iSort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Install iSort library
+        run: |
+          pip install isort
+      - name: Sort imports
+        run: isort . --profile black --filter-files --only-modified
