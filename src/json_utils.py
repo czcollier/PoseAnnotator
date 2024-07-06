@@ -1,6 +1,6 @@
 import datetime
 import json
-
+from pydrive.auth import GoogleAuth
 
 def load_annotations(annotations_file):
     """
@@ -69,3 +69,44 @@ def increment_idx(idx, len_annotations, increment):
     elif idx < 0:
         idx = len_annotations - 1
     return idx
+
+
+def authenticate_drive():
+    """
+    Authenticates the user with Google Drive using OAuth2.
+
+    Returns:
+        GoogleAuth: Authenticated GoogleAuth object.
+    """
+    gauth = GoogleAuth()
+    gauth.LocalWebserverAuth()
+    return gauth
+
+
+def upload_annotations(drive, annotations, file_name, folder_id):
+    """
+    Uploads the given annotations to Google Drive. If the file already exists, it updates the file.
+    Otherwise, it creates a new file.
+
+    Args:
+        drive (GoogleDrive): Authenticated GoogleDrive object.
+        annotations (dict): Annotations to be uploaded.
+        file_name (str): Name of the file uploaded.
+        folder_id (str): Google Drive folder ID where the file will be uploaded.
+    """
+    query = f"'{folder_id}' in parents and title = '{file_name}' and trashed = false"
+    file_list = drive.ListFile({'q': query}).GetList()
+    if file_list:
+        gfile = file_list[0]
+        print(f"File '{file_name}' exists. It will be updated.")
+    else:
+        if folder_id is None:
+            gfile = drive.CreateFile({'title': file_name})
+        else:
+            gfile = drive.CreateFile({'title': file_name, 'parents': [{'id': folder_id}]})
+        print(f"File '{file_name}' does not exist. It will be created.")
+        
+    annotations["info"]["date_created"] = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+    gfile.SetContentString(json.dumps(annotations, indent=2))
+    gfile.Upload()
+    print(f"File '{file_name}' uploaded successfully to drive.")

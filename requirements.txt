@@ -5,3 +5,4 @@ opencv-python
 pre-commit
 PyYAML
 tqdm
+pydrive

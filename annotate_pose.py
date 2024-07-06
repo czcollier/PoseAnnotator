@@ -5,8 +5,9 @@ import cv2
 import numpy as np
 
 from src.interactive_annotator import InteractiveAnnotator
-from src.json_utils import increment_idx, load_annotations, save_annotations
+from src.json_utils import increment_idx, load_annotations, save_annotations, upload_annotations, authenticate_drive
 
+from pydrive.drive import GoogleDrive
 
 def parse_imdir(annotations_file):
     ann_filename = ".".join(os.path.basename(annotations_file).split(".")[::-1])
@@ -37,6 +38,8 @@ def parse_args():
     )
     parser.add_argument("--without-hands", default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument("--save", default=True, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--cloud-upload", default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--cloud-folder", type=str, help="Google Drive folder ID for uploading annotations", default='root')
 
     args = parser.parse_args()
 
@@ -80,6 +83,11 @@ def main(args):
     new_coco_filepath = args.coco_filepath
     if "_kpts.json" not in args.coco_filepath:
         new_coco_filepath = args.coco_filepath.replace(".json", "_kpts.json")
+    if args.cloud_upload:
+        gauth = authenticate_drive()
+        drive = GoogleDrive(gauth)
+        folder_id = args.cloud_folder
+        file_name = os.path.basename(new_coco_filepath)
 
     annotations = coco_data["annotations"]
 
@@ -194,7 +202,8 @@ def main(args):
     coco_data["annotations"] = annotations
     if args.save:
         save_annotations(new_coco_filepath, coco_data, update_date=True)
-
+    if args.cloud_upload:
+        upload_annotations(drive, coco_data, file_name, folder_id)
 
 if __name__ == "__main__":
     args = parse_args()

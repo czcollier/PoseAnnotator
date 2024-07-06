@@ -8,11 +8,11 @@ There are some examples in this [file](examples.md)
 
 ## How to start
 
-**Bboxes annottaion:** use script [annotate_bboxes](../annotate_bboxes.py) to take batch of images and annotate bboxes.
+**Bboxes annotation:** use script [annotate_bboxes](../annotate_bboxes.py) to take batch of images and annotate bboxes.
 
 > __Example usage:__ `python annotate_bboxes.py test_data/RePoGen_bbox_test`
 
-**Keypoints annottaion:** use script [annotate_keypoints](../annotate_pose.py) to take images with annotated bboxes and add keypoints.
+**Keypoints annotation:** use script [annotate_keypoints](../annotate_pose.py) to take images with annotated bboxes and add keypoints.
 
 > __Example usage:__ `python annotate_pose.py test_data/RePoGen_kpts_test/annotations/person_keypoints_val2017.json`
 
@@ -67,3 +67,26 @@ The tool works with COCO-format but we created some custom pose formats for our 
 ### Exporting results
 
 The application automatically saves your progress when you switch to another image or exit the application. The keypoints are saved in `*_kpts.json` file, bboxes in `*.json` (without name change) by default. 
+
+### Syncing results to Google Drive:
+Annotation results can be synced with your google drive for backup and progress monitoring. Drive API requires OAuth2.0 for authentication which requires the following steps.
+
+1. Go to APIs Console and make your own project.
+2. Search for 'Google Drive API', select the entry, and click 'Enable'.
+3. Select 'Credentials' from the left menu, click 'Create Credentials', select 'OAuth client ID'.
+4. Now, the product name and consent screen need to be set -> click 'Configure consent screen' and follow the instructions. 
+5. Once finished, create the credentials for OAuth2:
+    - Select 'Application type' to be Web application.
+    - Enter an appropriate name.
+    - Input http://localhost:8080/ for 'Authorized redirect URIs'.
+    - Click 'Save'.
+    - Click 'Download JSON' on the right side of Client ID to download client_secret_<really long ID>.json.
+7. Rename the file to 'client_secrets.json' and place it in your working directory.
+
+Your Google Drive setup is completed. Add the `cloud-upload` flag to the script to save the results.
+
+> __Example usage:__ `python annotate_pose.py test_data/RePoGen_kpts_test/annotations/person_keypoints_val2017.json --cloud-upload`
+
+To save the results in specific folder in your google drive, provide the folder id as the `cloud-folder` argument.
+
+> __Example usage:__ `python annotate_pose.py test_data/RePoGen_kpts_test/annotations/person_keypoints_val2017.json --cloud-upload --cloud-folder XXXX`
