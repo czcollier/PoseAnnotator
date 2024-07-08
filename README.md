@@ -38,7 +38,7 @@ If you use the tool for your research, please consider citing us:
 ```bibtex
 @misc{PoseAnnotator2024,
     title={PoseAnnotator},
-    author={Miroslav Purkrabek},
+    author={PoseAnnotator contributors},
     howpublished = {\url{https://github.com/MiraPurkrabek/PoseAnnotator}},
     year={2024}
 }
