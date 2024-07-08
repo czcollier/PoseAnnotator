@@ -1,3 +1,4 @@
+# core dependencies
 autoflake
 black
 numpy
@@ -5,4 +6,6 @@ opencv-python
 pre-commit
 PyYAML
 tqdm
-pydrive
+
+# optional dependencies
+PyDrive # integrates Google Drive for uploading annotations
