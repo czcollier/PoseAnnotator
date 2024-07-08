@@ -9,7 +9,6 @@ import numpy as np
 from src.bbox_annotator import BboxAnnotator
 from src.json_utils import increment_idx, load_annotations, save_annotations, upload_annotations, authenticate_drive
 
-from pydrive.drive import GoogleDrive
 
 def save_annotations(annotations_file, annotations, ann_dict, update_date=False):
     annotations["annotations"] = []
@@ -171,6 +170,7 @@ def main(args):
     save_path = os.path.join(args.coco_folder, "annotations", "person_keypoints_val2017.json")
 
     if args.cloud_upload:
+        from pydrive.drive import GoogleDrive
         gauth = authenticate_drive()
         drive = GoogleDrive(gauth)
         folder_id = args.cloud_folder

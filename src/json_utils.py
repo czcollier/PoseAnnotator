@@ -1,6 +1,5 @@
 import datetime
 import json
-from pydrive.auth import GoogleAuth
 
 def load_annotations(annotations_file):
     """
@@ -79,6 +78,7 @@ def authenticate_drive():
     Returns:
         GoogleAuth: Authenticated GoogleAuth object.
     """
+    from pydrive.auth import GoogleAuth
     gauth = GoogleAuth()
     gauth.LoadCredentialsFile("credentials.json")
     if not gauth.credentials:

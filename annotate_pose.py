@@ -7,7 +7,6 @@ import numpy as np
 from src.interactive_annotator import InteractiveAnnotator
 from src.json_utils import increment_idx, load_annotations, save_annotations, upload_annotations, authenticate_drive
 
-from pydrive.drive import GoogleDrive
 
 def parse_imdir(annotations_file):
     ann_filename = ".".join(os.path.basename(annotations_file).split(".")[::-1])
@@ -84,6 +83,7 @@ def main(args):
     if "_kpts.json" not in args.coco_filepath:
         new_coco_filepath = args.coco_filepath.replace(".json", "_kpts.json")
     if args.cloud_upload:
+        from pydrive.drive import GoogleDrive
         gauth = authenticate_drive()
         drive = GoogleDrive(gauth)
         folder_id = args.cloud_folder
