@@ -74,12 +74,20 @@ def increment_idx(idx, len_annotations, increment):
 def authenticate_drive():
     """
     Authenticates the user with Google Drive using OAuth2.
-
+    Uses existing credentials if authenticated previously.
+    Otherwise opens the browser for re-authenticaation and saves the credentials.
     Returns:
         GoogleAuth: Authenticated GoogleAuth object.
     """
     gauth = GoogleAuth()
-    gauth.LocalWebserverAuth()
+    gauth.LoadCredentialsFile("credentials.json")
+    if not gauth.credentials:
+        gauth.LocalWebserverAuth()
+    elif gauth.access_token_expired:
+        gauth.Refresh()
+    else:
+        gauth.Authorize()
+    gauth.SaveCredentialsFile("credentials.json")
     return gauth
 
 
