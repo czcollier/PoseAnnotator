@@ -13,3 +13,7 @@ dependencies:
   - pre-commit
   - PyYAML
   - tqdm
+
+  - pip:
+    # optional dependencies
+    - PyDrive # integrates Google Drive for uploading annotations

@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 
 from src.bbox_annotator import BboxAnnotator
-from src.json_utils import increment_idx, load_annotations, save_annotations
+from src.json_utils import increment_idx, load_annotations, save_annotations, upload_annotations, authenticate_drive
 
 
 def save_annotations(annotations_file, annotations, ann_dict, update_date=False):
@@ -30,6 +30,8 @@ def parse_args():
         help="Folder containing the dataset for annotation",
     )
     parser.add_argument("--img-path", type=str, help="Path to the folder with images", default=None)
+    parser.add_argument("--cloud-upload", default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--cloud-folder", type=str, help="Google Drive folder ID for uploading annotations", default='root')
 
     args = parser.parse_args()
 
@@ -167,6 +169,13 @@ def main(args):
     img_idx = 0
     save_path = os.path.join(args.coco_folder, "annotations", "person_keypoints_val2017.json")
 
+    if args.cloud_upload:
+        from pydrive.drive import GoogleDrive
+        gauth = authenticate_drive()
+        drive = GoogleDrive(gauth)
+        folder_id = args.cloud_folder
+        file_name = os.path.basename(save_path)
+
     cv2.namedWindow("Image", cv2.WINDOW_GUI_NORMAL)
     ia = BboxAnnotator(
         ann_dict[img_list[img_idx][1]],
@@ -266,7 +275,8 @@ def main(args):
 
     cv2.destroyAllWindows()
     save_annotations(save_path, coco_data, ann_dict, update_date=True)
-
+    if args.cloud_upload:
+        upload_annotations(drive, coco_data, file_name, folder_id)
 
 if __name__ == "__main__":
     args = parse_args()
