@@ -191,7 +191,10 @@ def main(args):
         if k == ord("m") or k == 83:  # toggle current image
             ann_dict[img_list[img_idx][1]] = ia.get_annotation(json_compatible=True)
             img_idx = increment_idx(img_idx, len(img_list), 1)
-
+            print(img_idx)
+            print(img_list)
+            print(img_list[img_idx])
+            print(args.img_path)
             ia = BboxAnnotator(
                 ann_dict[img_list[img_idx][1]],
                 img_list[img_idx][1],

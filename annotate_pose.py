@@ -44,9 +44,10 @@ def parse_args():
 
     if not (os.path.exists(args.coco_filepath) and os.path.isfile(args.coco_filepath)):
         old_fname = os.path.join(args.coco_filepath, "annotations", "person_keypoints_val2017.json")
-        new_fname = os.path.join(
-            args.coco_filepath, "annotations", "person_keypoints_val2017_kpts.json"
-        )
+        new_fname = old_fname
+        #new_fname = os.path.join(
+        #    args.coco_filepath, "annotations", "person_keypoints_val2017_kpts.json"
+        #)
         if os.path.exists(new_fname):
             args.coco_filepath = new_fname
         else:
@@ -80,8 +81,9 @@ def main(args):
     ann_idx = 0
 
     new_coco_filepath = args.coco_filepath
-    if "_kpts.json" not in args.coco_filepath:
-        new_coco_filepath = args.coco_filepath.replace(".json", "_kpts.json")
+    #if "_kpts.json" not in args.coco_filepath:
+    #    new_coco_filepath = args.coco_filepath.replace(".json", "_kpts.json")
+    new_coco_filepath = args.coco_filepath
     if args.cloud_upload:
         from pydrive.drive import GoogleDrive
         gauth = authenticate_drive()

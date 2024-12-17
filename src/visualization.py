@@ -2,6 +2,7 @@ from copy import deepcopy
 
 import cv2
 import numpy as np
+import re
 
 NEUTRAL_COLOR = (52, 235, 107)
 
@@ -31,8 +32,8 @@ COCO_MARKERS = [
 #    ["right_hip", cv2.MARKER_TRIANGLE_UP, RIGHT_LEG_COLOR],
 #    ["left_knee", cv2.MARKER_SQUARE, LEFT_LEG_COLOR],
     ["hip_center", cv2.MARKER_SQUARE, LEFT_ARM_COLOR],
-    ["board_tip_front", cv2.MARKER_TILTED_CROSS, LEFT_LEG_COLOR],
-    ["board_tip_back", cv2.MARKER_TILTED_CROSS, RIGHT_LEG_COLOR],
+    ["board_tip_front", cv2.MARKER_TILTED_CROSS, RIGHT_LEG_COLOR],
+    ["board_tip_back", cv2.MARKER_TILTED_CROSS, LEFT_LEG_COLOR],
 ]
 
 COCO_MARKERS_WITH_HANDS = COCO_MARKERS + [
@@ -246,6 +247,11 @@ def show_keypoints(img, keypoints):
     invisible_marker_size = max(int(np.sqrt(max_area) / 50), 1)
     marker_thickness = max(int(np.sqrt(max_area) / 100), 1)
 
+
+    def squash_snake(snake_str):
+        return "".join(re.findall("(?:^|_)([a-z])", snake_str))
+
+
     if len(keypoints) == len(COCO_MARKERS):
         coco_markers = COCO_MARKERS
         coco_skeleton = COCO_SKELETON
@@ -267,6 +273,8 @@ def show_keypoints(img, keypoints):
         else:
             color = (150, 150, 150, 0)
 
+        kpt_shortname = squash_snake(marker_info[0])
+
         if kpt[2] == 2:
             img = cv2.drawMarker(
                 img,
@@ -276,6 +284,8 @@ def show_keypoints(img, keypoints):
                 markerSize=invisible_marker_size if kpt[2] == 1 else marker_size,
                 thickness=marker_thickness,
             )
+            img = cv2.putText(img, str(kpt_shortname),
+                    (int(kpt[0]), int(kpt[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0,0,0), 2)
 
         else:
             img_overlay = img.copy()
@@ -287,6 +297,8 @@ def show_keypoints(img, keypoints):
                 markerSize=marker_size,
                 thickness=marker_thickness,
             )
+            img_overlay = cv2.putText(img_overlay, str(kpt_shortname),
+                    (int(kpt[0]), int(kpt[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0,0,0), 2)
             img = cv2.addWeighted(img_overlay, 0.7, img, 0.3, 0)
 
     for bone_info in coco_skeleton:

@@ -16,7 +16,7 @@ class InteractiveAnnotator(object):
         img_path,
         window_name="Image",
         fps=20,
-        with_example=True,
+        with_example=False,
         is_start=True,
         two_scales=False,
         inf_size=None,
@@ -216,20 +216,15 @@ class InteractiveAnnotator(object):
             self.annotation["keypoints"][mask_unvis_kpts, 2] = 2
             self.show()
 
-        # if k > -1:
-        #     print(k, self.annotation)
 
     def set_current_keypoint(self, x, y):
         # Check if the mouse click is within any keypoint
         idxs, kpts = self.kpts_mapping
         dst = np.linalg.norm(kpts - np.array([x, y]), axis=1)
-        # print(kpts)
-        # print(dst)
         if np.min(dst) < self.distance_threshold:
             self.current_keypoint = idxs[np.argmin(dst)]
 
     def show(self):
-        print(f"show: {self.img_path}")
         img, bbox_with_pad, kpts_mapping = show_annotation(
             self.img,
             annotation=self.annotation,
@@ -237,7 +232,6 @@ class InteractiveAnnotator(object):
             two_scales=self.two_scales,
             inf_size=self.inf_size,
         )
-
         self.kpts_mapping = kpts_mapping
         self.x_divider = bbox_with_pad[2]
         self.x_offsets = (bbox_with_pad[0], bbox_with_pad[2])
@@ -255,8 +249,10 @@ class InteractiveAnnotator(object):
                 except Exception as e:
                     print(repr(e))
 
-
-            img = np.hstack((img, self.example_img))
+            try:
+                img = np.hstack((img, self.example_img))
+            except Exception as e:
+                print(repr(e))
 
         # Put the text on the image
         text = "{}-{:d}".format(self.annotation["image_id"], self.annotation["id"])
@@ -289,8 +285,12 @@ class InteractiveAnnotator(object):
             print(img.shape[:2], dst_size[:2])
             img = cv2.resize(img, dst_size)
             print(img.shape[:2], img.shape[0] / img.shape[1], coef)
-
-        cv2.imshow(self.window_name, img)
+      
+        try:
+            cv2.imshow(self.window_name, img)
+        except Exception as e:
+            print("zero size bounding box found. make sure to add bounding boxes before adding skeleton annotations")
+            print(repr(e))
 
     def undo(self, all=False):
         if len(self.memory) > 0:
@@ -311,6 +311,8 @@ class InteractiveAnnotator(object):
             self.annotation["keypoints"] = np.zeros((4, 3), dtype=float)
         elif self.pose_format == "coco_with_thumbs":
             self.annotation["keypoints"] = np.zeros((8, 3), dtype=float)
+
+        self.keypoint_names = ["H", "I", "F", "B"]
 
         self.annotation["keypoints"][:, 2] = 2
         #self.annotation["keypoints"][:17, :2] = [
