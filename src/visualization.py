@@ -16,23 +16,23 @@ RIGHT_SIDE_COLOR = (52, 171, 235, 255)
 RIGHT_FACE_COLOR = (107, 52, 235, 255)
 
 COCO_MARKERS = [
-    ["nose", cv2.MARKER_CROSS, NEUTRAL_COLOR],
-    ["left_eye", cv2.MARKER_SQUARE, LEFT_FACE_COLOR],
-    ["right_eye", cv2.MARKER_SQUARE, RIGHT_FACE_COLOR],
-    ["left_ear", cv2.MARKER_CROSS, LEFT_FACE_COLOR],
-    ["right_ear", cv2.MARKER_CROSS, RIGHT_FACE_COLOR],
-    ["left_shoulder", cv2.MARKER_TRIANGLE_UP, LEFT_ARM_COLOR],
-    ["right_shoulder", cv2.MARKER_TRIANGLE_UP, RIGHT_ARM_COLOR],
-    ["left_elbow", cv2.MARKER_SQUARE, LEFT_ARM_COLOR],
-    ["right_elbow", cv2.MARKER_SQUARE, RIGHT_ARM_COLOR],
-    ["left_wrist", cv2.MARKER_TILTED_CROSS, LEFT_ARM_COLOR],
-    ["right_wrist", cv2.MARKER_TILTED_CROSS, RIGHT_ARM_COLOR],
-    ["left_hip", cv2.MARKER_TRIANGLE_UP, LEFT_LEG_COLOR],
-    ["right_hip", cv2.MARKER_TRIANGLE_UP, RIGHT_LEG_COLOR],
-    ["left_knee", cv2.MARKER_SQUARE, LEFT_LEG_COLOR],
-    ["right_knee", cv2.MARKER_SQUARE, RIGHT_LEG_COLOR],
-    ["left_ankle", cv2.MARKER_TILTED_CROSS, LEFT_LEG_COLOR],
-    ["right_ankle", cv2.MARKER_TILTED_CROSS, RIGHT_LEG_COLOR],
+    ["head", cv2.MARKER_CROSS, NEUTRAL_COLOR],
+#    ["left_eye", cv2.MARKER_SQUARE, LEFT_FACE_COLOR],
+#    ["right_eye", cv2.MARKER_SQUARE, RIGHT_FACE_COLOR],
+#    ["left_ear", cv2.MARKER_CROSS, LEFT_FACE_COLOR],
+#    ["right_ear", cv2.MARKER_CROSS, RIGHT_FACE_COLOR],
+#    ["left_shoulder", cv2.MARKER_TRIANGLE_UP, LEFT_ARM_COLOR],
+#    ["right_shoulder", cv2.MARKER_TRIANGLE_UP, RIGHT_ARM_COLOR],
+#    ["left_elbow", cv2.MARKER_SQUARE, LEFT_ARM_COLOR],
+#    ["right_elbow", cv2.MARKER_SQUARE, RIGHT_ARM_COLOR],
+#    ["left_wrist", cv2.MARKER_TILTED_CROSS, LEFT_ARM_COLOR],
+#    ["right_wrist", cv2.MARKER_TILTED_CROSS, RIGHT_ARM_COLOR],
+#    ["left_hip", cv2.MARKER_TRIANGLE_UP, LEFT_LEG_COLOR],
+#    ["right_hip", cv2.MARKER_TRIANGLE_UP, RIGHT_LEG_COLOR],
+#    ["left_knee", cv2.MARKER_SQUARE, LEFT_LEG_COLOR],
+    ["hip_center", cv2.MARKER_SQUARE, LEFT_ARM_COLOR],
+    ["board_tip_front", cv2.MARKER_TILTED_CROSS, LEFT_LEG_COLOR],
+    ["board_tip_back", cv2.MARKER_TILTED_CROSS, RIGHT_LEG_COLOR],
 ]
 
 COCO_MARKERS_WITH_HANDS = COCO_MARKERS + [
@@ -43,25 +43,25 @@ COCO_MARKERS_WITH_HANDS = COCO_MARKERS + [
 ]
 
 COCO_SKELETON = [
-    [[16, 14], LEFT_LEG_COLOR],  # Left ankle - Left knee
-    [[14, 12], LEFT_LEG_COLOR],  # Left knee - Left hip
-    [[17, 15], RIGHT_LEG_COLOR],  # Right ankle - Right knee
-    [[15, 13], RIGHT_LEG_COLOR],  # Right knee - Right hip
-    [[12, 13], NEUTRAL_COLOR],  # Left hip - Right hip
-    [[6, 12], LEFT_SIDE_COLOR],  # Left hip - Left shoulder
-    [[7, 13], RIGHT_SIDE_COLOR],  # Right hip - Right shoulder
-    [[6, 7], NEUTRAL_COLOR],  # Left shoulder - Right shoulder
-    [[6, 8], LEFT_ARM_COLOR],  # Left shoulder - Left elbow
-    [[7, 9], RIGHT_ARM_COLOR],  # Right shoulder - Right elbow
-    [[8, 10], LEFT_ARM_COLOR],  # Left elbow - Left wrist
-    [[9, 11], RIGHT_ARM_COLOR],  # Right elbow - Right wrist
-    [[2, 3], NEUTRAL_COLOR],  # Left eye - Right eye
-    [[1, 2], LEFT_FACE_COLOR],  # Nose - Left eye
-    [[1, 3], RIGHT_FACE_COLOR],  # Nose - Right eye
-    [[2, 4], LEFT_FACE_COLOR],  # Left eye - Left ear
-    [[3, 5], RIGHT_FACE_COLOR],  # Right eye - Right ear
-    [[4, 6], LEFT_FACE_COLOR],  # Left ear - Left shoulder
-    [[5, 7], RIGHT_FACE_COLOR],  # Right ear - Right shoulder
+#    [[16, 14], LEFT_LEG_COLOR],  # Left ankle - Left knee
+#    [[14, 12], LEFT_LEG_COLOR],  # Left knee - Left hip
+#    [[17, 15], RIGHT_LEG_COLOR],  # Right ankle - Right knee
+#    [[15, 13], RIGHT_LEG_COLOR],  # Right knee - Right hip
+#    [[12, 13], NEUTRAL_COLOR],  # Left hip - Right hip
+#    [[6, 12], LEFT_SIDE_COLOR],  # Left hip - Left shoulder
+#    [[7, 13], RIGHT_SIDE_COLOR],  # Right hip - Right shoulder
+#    [[6, 7], NEUTRAL_COLOR],  # Left shoulder - Right shoulder
+#    [[6, 8], LEFT_ARM_COLOR],  # Left shoulder - Left elbow
+#    [[7, 9], RIGHT_ARM_COLOR],  # Right shoulder - Right elbow
+#    [[8, 10], LEFT_ARM_COLOR],  # Left elbow - Left wrist
+#    [[9, 11], RIGHT_ARM_COLOR],  # Right elbow - Right wrist
+#    [[2, 3], NEUTRAL_COLOR],  # Left eye - Right eye
+#    [[1, 2], LEFT_FACE_COLOR],  # Nose - Left eye
+#    [[1, 3], RIGHT_FACE_COLOR],  # Nose - Right eye
+    [[2, 4], LEFT_LEG_COLOR],  # Left eye - Left ear
+    [[2, 3], RIGHT_LEG_COLOR],  # Right eye - Right ear
+    [[1, 2], NEUTRAL_COLOR],  # Left ear - Left shoulder
+#    [[5, 7], RIGHT_FACE_COLOR],  # Right ear - Right shoulder
 ]
 
 COCO_SKELETON_WITH_HANDS = COCO_SKELETON + [

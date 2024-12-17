@@ -162,6 +162,8 @@ class BboxAnnotator(object):
         # Transfer corners to annotations
         self.annotations = []
         for start, stop in zip(self.starts, self.stops):
+            print(start)
+            print(stop)
             start = list(start)
             stop = list(stop)
             for i in range(2):

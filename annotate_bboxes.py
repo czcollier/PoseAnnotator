@@ -258,7 +258,7 @@ def main(args):
             break
         elif k == ord("u"):
             ann_dict[img_list[img_idx][1]] = ia.get_annotation(json_compatible=True)
-            while not ann_dict[img_list[img_idx][1]] == []:
+            while not ann_dict[img_list[img_idx][1]] == [] and not img_idx == len(img_list) - 1:
                 img_idx = increment_idx(img_idx, len(img_list), 1)
 
             ia = BboxAnnotator(

@@ -39,12 +39,12 @@ class InteractiveAnnotator(object):
         - pose_format: The format of the pose annotation.
         """
         self.started_at = time.time()
-
+        self.img_path = img_path
         self.img = cv2.imread(img_path)
 
         if annotation is None:
             self.annotation = {
-                "keypoints": np.zeros((17, 3)),
+                "keypoints": np.zeros((4, 3)),
                 "bbox": [0, 0, self.img.shape[1], self.img.shape[0]],
                 "image_id": 0,
                 "category_id": 1,
@@ -55,7 +55,7 @@ class InteractiveAnnotator(object):
             self.annotation = deepcopy(annotation)
 
             if "keypoints" not in self.annotation.keys():
-                self.annotation["keypoints"] = np.zeros((17, 3))
+                self.annotation["keypoints"] = np.zeros((4, 3))
 
             if "area" not in self.annotation.keys():
                 self.annotation["area"] = self.annotation["bbox"][2] * self.annotation["bbox"][3]
@@ -229,6 +229,7 @@ class InteractiveAnnotator(object):
             self.current_keypoint = idxs[np.argmin(dst)]
 
     def show(self):
+        print(f"show: {self.img_path}")
         img, bbox_with_pad, kpts_mapping = show_annotation(
             self.img,
             annotation=self.annotation,
@@ -244,12 +245,16 @@ class InteractiveAnnotator(object):
 
         # Stitch example next to the image
         if self.with_example:
-            # Resite the example image
+            # Resize the example image
             if self.example_img.shape[0] != img.shape[0]:
                 ratio = img.shape[0] / self.example_img.shape[0]
-                self.example_img = cv2.resize(
-                    self.example_img, (int(ratio * self.example_img.shape[1]), img.shape[0])
-                )
+                try:
+                    self.example_img = cv2.resize(
+                        self.example_img, (int(ratio * self.example_img.shape[1]), img.shape[0])
+                    )
+                except Exception as e:
+                    print(repr(e))
+
 
             img = np.hstack((img, self.example_img))
 
@@ -303,29 +308,35 @@ class InteractiveAnnotator(object):
 
     def generate(self):
         if self.pose_format == "coco":
-            self.annotation["keypoints"] = np.zeros((17, 3), dtype=float)
+            self.annotation["keypoints"] = np.zeros((4, 3), dtype=float)
         elif self.pose_format == "coco_with_thumbs":
-            self.annotation["keypoints"] = np.zeros((21, 3), dtype=float)
+            self.annotation["keypoints"] = np.zeros((8, 3), dtype=float)
 
         self.annotation["keypoints"][:, 2] = 2
-        self.annotation["keypoints"][:17, :2] = [
-            [0.50, 0.15],  # Nose
-            [0.55, 0.10],  # Left eye
-            [0.45, 0.10],  # Right eye
-            [0.65, 0.10],  # Left ear
-            [0.35, 0.10],  # Right ear
-            [0.73, 0.30],  # Left shoulder
-            [0.27, 0.30],  # Right shoulder
-            [0.86, 0.43],  # Left elbow
-            [0.14, 0.43],  # Right elbow
-            [0.96, 0.56],  # Left wrist
-            [0.04, 0.56],  # Right wrist
-            [0.73, 0.65],  # Left hip
-            [0.27, 0.65],  # Right hip
-            [0.73, 0.79],  # Left knee
-            [0.27, 0.79],  # Right knee
-            [0.73, 0.93],  # Left ankle
-            [0.27, 0.93],  # Right ankle
+        #self.annotation["keypoints"][:17, :2] = [
+        #    [0.50, 0.15],  # Nose
+        #    [0.55, 0.10],  # Left eye
+        #    [0.45, 0.10],  # Right eye
+        #    [0.65, 0.10],  # Left ear
+        #    [0.35, 0.10],  # Right ear
+        #    [0.73, 0.30],  # Left shoulder
+        #    [0.27, 0.30],  # Right shoulder
+        #    [0.86, 0.43],  # Left elbow
+        #    [0.14, 0.43],  # Right elbow
+        #    [0.96, 0.56],  # Left wrist
+        #    [0.04, 0.56],  # Right wrist
+        #    [0.73, 0.65],  # Left hip
+        #    [0.27, 0.65],  # Right hip
+        #    [0.73, 0.79],  # Left knee
+        #    [0.27, 0.79],  # Right knee
+        #    [0.73, 0.93],  # Left ankle
+        #    [0.27, 0.93],  # Right ankle
+        #]
+        self.annotation["keypoints"][:4, :2] = [
+            [0.50, 0.15],  # head
+            [0.50, 0.65],  # hip center
+            [0.73, 0.93],  # board front tip
+            [0.27, 0.93],  # board back tip 
         ]
         if self.pose_format == "coco_with_thumbs":
             self.annotation["keypoints"][17:, :2] = [
